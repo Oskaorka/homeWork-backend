@@ -1,7 +1,7 @@
 const express = require('express')
 const path = require('path')
 const chalk = require("chalk")
-const {addNote, getNotes, removeNote, editNote} =  require('./note.controller')
+const {addNote, getNotes, removeNote, updateNote} =  require('./note.controller')
 
 const port = 3000
 
@@ -24,6 +24,7 @@ app.get('/', async (req, res) => {
 
 app.post('/', async (req, res) => {
     await addNote(req.body.title)
+
     res.render('index', {
         title: 'Express App',
         notes: await getNotes(),
@@ -32,21 +33,21 @@ app.post('/', async (req, res) => {
 })
 
 app.delete('/:id',  async (req, res) => {
-    /*console.log('id', req.params.id)*/
     await removeNote(req.params.id)
     res.render('index', {
         title: 'Express App',
         notes: await getNotes(),
         created: false
+
     })
 })
 
-app.put('/:title/:id',  async (req, res) => {
-    await  editNote(req.params.title,req.params.id)
+app.put('/:id',  async (req, res) => {
+    await updateNote({ id: req.params.id, title: req.body.title})
     res.render('index', {
         title: 'Express App',
         notes: await getNotes(),
-        created: false
+        created: true
     })
 })
 
